@@ -3,8 +3,6 @@ import pandas as pd
 import numpy as np
 from transformers import AutoTokenizer, AutoModel
 import torch
-tokenizer = AutoTokenizer.from_pretrained("microsoft/unixcoder-base")
-model = AutoModel.from_pretrained("microsoft/unixcoder-base")
 from itertools import groupby
 import csv
 from sklearn.linear_model import LogisticRegression
@@ -22,6 +20,8 @@ from sys import argv
 import math
 import time
 
+tokenizer = AutoTokenizer.from_pretrained("microsoft/unixcoder-base")
+model = AutoModel.from_pretrained("microsoft/unixcoder-base")
 synch_dir = argv
 work_dir = (synch_dir[1] + "/")
 
