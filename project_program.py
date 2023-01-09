@@ -20,15 +20,13 @@ import re
 from joblib import dump, load
 from sys import argv
 import math
+import time
 
-#work_dir = "/home/runner/work/_actions/mihakremen/det_sec/main/"
 synch_dir = argv
 work_dir = (synch_dir[1] + "/")
-print ("SHOW INPUT ARGUMENT", synch_dir)
 
 #  Загрузка обученной модели кандидата пароля
 model1_candpass = load(work_dir+'Models/Model1_candidate_pass.joblib')
-
 
 # Загрузка обученной контекстной модели
 Context_model = load(work_dir + 'Models/SVM_context_model.joblib')
@@ -125,12 +123,11 @@ def code_to_str(file_text):
             code += str(line)
         return code
 
-    
+
 # Функция окружения
 def context_password(snippet, password, ntokens = 30):
     snippet_split = snippet.split() #сплитуем снипет по пробелу
     result_massiv = []
-  #if snippet.count(password) == 1:
     for candidat_pass in range(len(snippet_split)): #Идём по снипету
         if password in snippet_split[candidat_pass]: #находим пароль в элементе массива
             ntokens_max = ntokens
@@ -160,7 +157,6 @@ def context_password(snippet, password, ntokens = 30):
             for j in range(ntokens_b):
                 result.insert(0, snippet_split[count_backward])
                 count_backward -= 1
-
             result = ' '.join(result) #Преобразуем массив в строку
             result_massiv.append(result) #Добавляем новую строку к итоговому массиву
     result_massiv = [el for el, _ in groupby(result_massiv)]    
@@ -174,6 +170,7 @@ def tokenize_for_BERT(snippet):
     tokens_ids = tokenizer.convert_tokens_to_ids(tokens)
     return tokens_ids
 
+
 # удаление дубликатов в массиве
 def drop_duplicates(list):
     n = []
@@ -182,47 +179,49 @@ def drop_duplicates(list):
             n.append(i)
     return n
 
+    
+while True:
+    # Проверка наличия нового файла
+    if new_file_available(): #ФУНКЦИЯ ПОЛУЧЕНИЯ НОВОГО ФАЙЛА(НЕОБХОДИМО ПРОПИСАТЬ)
+        # Обработка нового файла
+        with open(work_dir + 'pathes.txt', 'r') as f:
+            var = f.readline().split()
+        for path in var:
+            path = path.rstrip()
+            
+            # Работа первой модели
+            input = input = tokens_prepare_ML1(tokenization(code_to_str(path)))
+            X_for_Model1 = input.drop('Input', axis = 1).values
+            model1_candpass.predict(X_for_Model1)
+            new_preds = custom_predict(X=X_for_Model1, threshold=0.4)
+            input2 = input['Input'].values
+            passwords_mas = [input2[i] for i in range(len(new_preds)) if new_preds[i] == 1]
+            
+            # Работа второй модели
+            check_file = code_to_str(path)
+            check_snippets = []
+            preds_for_snippets = []
+            for cand_pass in passwords_mas:
+                snippets  = context_password(check_file, cand_pass)
+                for i in snippets:
+                    check_snippets.append(i)
+            check_snippets = drop_duplicates(check_snippets)  # Удаление дубликатов
+            for snippet in check_snippets:
+                tokens_ids = tokenize_for_BERT(snippet)
+                context_embeddings = model(torch.tensor(tokens_ids)[None,:])[0]
+                pred =  Context_model.predict([context_embeddings[0][0][:].detach().numpy()])
+                preds_for_snippets.append(pred[0])
+            results = {'Snippet': check_snippets, 'Target': preds_for_snippets}
+            df = pd.DataFrame(results)
+            res_preds = df.loc[:, 'Target'].values
+            
+            #Файл json с результатом
+            snippets_with_pass = df[df['Target'] == 1]['Snippet']
+            snippets_with_pass.to_json('FindPasswords.json')
+            
+            #Вывод результата с именем файла и единичками в лог
+            print(path,'Найденные пароли:', df[df['Target'] == 1]['Snippet'], sep = '\n')
+    else:
+        # Задержка на 1 секунду
+        time.sleep(1)
 
-with open(work_dir + 'pathes.txt', 'r') as f:
-    var = f.readline().split()
-for path in var:
-    path = path.rstrip()
-    # Работа первой модели
-    input = input = tokens_prepare_ML1(tokenization(code_to_str(path)))
-    X_for_Model1 = input.drop('Input', axis = 1).values
-    model1_candpass.predict(X_for_Model1)
-    new_preds = custom_predict(X=X_for_Model1, threshold=0.4)
-    input2 = input['Input'].values
-    passwords_mas = [input2[i] for i in range(len(new_preds)) if new_preds[i] == 1]
-    
-    # Работа второй модели
-    check_file = code_to_str(path)
-    check_snippets = []
-    preds_for_snippets = []
-    for cand_pass in passwords_mas:
-        snippets  = context_password(check_file, cand_pass)
-        for i in snippets:
-            check_snippets.append(i)
-    check_snippets = drop_duplicates(check_snippets)  # Удаление дубликатов
-    for snippet in check_snippets:
-        tokens_ids = tokenize_for_BERT(snippet)
-        context_embeddings = model(torch.tensor(tokens_ids)[None,:])[0]
-        pred =  Context_model.predict([context_embeddings[0][0][:].detach().numpy()])
-        preds_for_snippets.append(pred[0])
-    results = {'Snippet': check_snippets, 'Target': preds_for_snippets}
-    df = pd.DataFrame(results)
-    res_preds = df.loc[:, 'Target'].values
-    
-    #Файл с результатами, для отработки ошибки при единичке и отправьке письма
-    with open (work_dir + 'Program_predictions.txt', 'a') as f:
-        for i in res_preds:
-            f.write(str(i) + ' ')
-    #Файл с именами файлов + сниппеты с паролями
-    snippets_with_pass = df[df['Target'] == 1]['Snippet'].tolist()
-    with open(work_dir + 'otchet.txt', 'a') as f:
-        f.write('Файл ' + path + '\n')
-        f.write('Сниппеты:' + '\n')
-        for count, snippet_with_pass in enumerate(snippets_with_pass):
-            f.write(str(count) + ') ' + str(snippet_with_pass) + '\n')
-    #Вывод результата с именем файла и единичками 
-    print(path,'Найденные пароли:', df[df['Target'] == 1]['Snippet'], sep = '\n')
