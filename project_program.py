@@ -171,7 +171,7 @@ def tokenize_for_BERT(snippet):
     return tokens_ids
 
 
-# удаление дубликатов в массиве
+# Удаление дубликатов в массиве
 def drop_duplicates(list):
     n = []
     for i in list:
@@ -179,7 +179,36 @@ def drop_duplicates(list):
             n.append(i)
     return n
 
-    
+# Функция работы модели кандидата пароля
+def model1(path):
+    input = tokens_prepare_ML1(tokenization(code_to_str(path)))
+    X_for_Model1 = input.drop('Input', axis = 1).values
+    model1_candpass.predict(X_for_Model1)
+    new_preds = custom_predict(X=X_for_Model1, threshold=0.4)
+    input2 = input['Input'].values
+    passwords_mas = [input2[i] for i in range(len(new_preds)) if new_preds[i] == 1]
+    return passwords_mas
+
+# Функция работы модели анализа окружения:
+def model2(path):
+    check_file = code_to_str(path)
+    check_snippets = []
+    preds_for_snippets = []
+    for cand_pass in passwords_mas:
+        snippets  = context_password(check_file, cand_pass)
+            for i in snippets:
+                check_snippets.append(i)
+    check_snippets = drop_duplicates(check_snippets)  # Удаление дубликатов
+    for snippet in check_snippets:
+        tokens_ids = tokenize_for_BERT(snippet)
+        context_embeddings = model(torch.tensor(tokens_ids)[None,:])[0]
+        pred =  Context_model.predict([context_embeddings[0][0][:].detach().numpy()])
+        preds_for_snippets.append(pred[0])
+    results = {'Snippet': check_snippets, 'Target': preds_for_snippets}
+    df = pd.DataFrame(results)
+    return df
+
+
 while True:
     # Проверка наличия нового файла
     if new_file_available(): #ФУНКЦИЯ ПОЛУЧЕНИЯ НОВОГО ФАЙЛА(НЕОБХОДИМО ПРОПИСАТЬ)
@@ -188,39 +217,16 @@ while True:
             var = f.readline().split()
         for path in var:
             path = path.rstrip()
-            
             # Работа первой модели
-            input = input = tokens_prepare_ML1(tokenization(code_to_str(path)))
-            X_for_Model1 = input.drop('Input', axis = 1).values
-            model1_candpass.predict(X_for_Model1)
-            new_preds = custom_predict(X=X_for_Model1, threshold=0.4)
-            input2 = input['Input'].values
-            passwords_mas = [input2[i] for i in range(len(new_preds)) if new_preds[i] == 1]
-            
+            passwords_mas = model1(path)
             # Работа второй модели
-            check_file = code_to_str(path)
-            check_snippets = []
-            preds_for_snippets = []
-            for cand_pass in passwords_mas:
-                snippets  = context_password(check_file, cand_pass)
-                for i in snippets:
-                    check_snippets.append(i)
-            check_snippets = drop_duplicates(check_snippets)  # Удаление дубликатов
-            for snippet in check_snippets:
-                tokens_ids = tokenize_for_BERT(snippet)
-                context_embeddings = model(torch.tensor(tokens_ids)[None,:])[0]
-                pred =  Context_model.predict([context_embeddings[0][0][:].detach().numpy()])
-                preds_for_snippets.append(pred[0])
-            results = {'Snippet': check_snippets, 'Target': preds_for_snippets}
-            df = pd.DataFrame(results)
-            res_preds = df.loc[:, 'Target'].values
-            
+            res_preds = model2(path)
             #Файл json с результатом
-            snippets_with_pass = df[df['Target'] == 1]['Snippet']
+            snippets_with_pass = res_preds[res_preds['Target'] == 1]['Snippet']
             snippets_with_pass.to_json('FindPasswords.json')
             
             #Вывод результата с именем файла и единичками в лог
-            print(path,'Найденные пароли:', df[df['Target'] == 1]['Snippet'], sep = '\n')
+            print(path,'Найденные пароли:', res_preds[res_preds['Target'] == 1]['Snippet'], sep = '\n')
     else:
         # Задержка на 1 секунду
         time.sleep(1)
