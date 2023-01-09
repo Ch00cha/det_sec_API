@@ -196,8 +196,8 @@ def model2(path):
     preds_for_snippets = []
     for cand_pass in passwords_mas:
         snippets  = context_password(check_file, cand_pass)
-            for i in snippets:
-                check_snippets.append(i)
+        for i in snippets:
+            check_snippets.append(i)
     check_snippets = drop_duplicates(check_snippets)  # Удаление дубликатов
     for snippet in check_snippets:
         tokens_ids = tokenize_for_BERT(snippet)
