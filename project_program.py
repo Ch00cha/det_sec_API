@@ -22,14 +22,13 @@ import time
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/unixcoder-base")
 model = AutoModel.from_pretrained("microsoft/unixcoder-base")
-synch_dir = argv
-work_dir = (synch_dir[1] + "/")
+
 
 #  Загрузка обученной модели кандидата пароля
-model1_candpass = load(work_dir+'Models/Model1_candidate_pass.joblib')
+model1_candpass = load('models/Model1_candidate_pass.joblib')
 
 # Загрузка обученной контекстной модели
-Context_model = load(work_dir + 'Models/SVM_context_model.joblib')
+Context_model = load('models/SVM_context_model.joblib')
 
 
 def tokenization(file_text):
@@ -209,26 +208,26 @@ def model2(path):
     return df
 
 
-if __name__ == '__main__':
-    while True:
-        # Проверка наличия нового файла
-        if new_file_available(): #ФУНКЦИЯ ПОЛУЧЕНИЯ НОВОГО ФАЙЛА(НЕОБХОДИМО ПРОПИСАТЬ)
-            # Обработка нового файла
-            with open(work_dir + 'pathes.txt', 'r') as f:
-                var = f.readline().split()
-            for path in var:
-                path = path.rstrip()
-                # Работа первой модели
-                passwords_mas = model1(path)
-                # Работа второй модели
-                res_preds = model2(path)
-                #Файл json с результатом
-                snippets_with_pass = res_preds[res_preds['Target'] == 1]['Snippet']
-                snippets_with_pass.to_json('FindPasswords.json')
+# if __name__ == '__main__':
+#     while True:
+#         # Проверка наличия нового файла
+#         if new_file_available(): #ФУНКЦИЯ ПОЛУЧЕНИЯ НОВОГО ФАЙЛА(НЕОБХОДИМО ПРОПИСАТЬ)
+#             # Обработка нового файла
+#             with open(work_dir + 'pathes.txt', 'r') as f:
+#                 var = f.readline().split()
+#             for path in var:
+#                 path = path.rstrip()
+#                 # Работа первой модели
+#                 passwords_mas = model1(path)
+#                 # Работа второй модели
+#                 res_preds = model2(path)
+#                 #Файл json с результатом
+#                 snippets_with_pass = res_preds[res_preds['Target'] == 1]['Snippet']
+#                 snippets_with_pass.to_json('FindPasswords.json')
 
-                #Вывод результата с именем файла и единичками в лог
-                print(path,'Найденные пароли:', res_preds[res_preds['Target'] == 1]['Snippet'], sep = '\n')
-        else:
-            # Задержка на 1 секунду
-            time.sleep(1)
+#                 #Вывод результата с именем файла и единичками в лог
+#                 print(path,'Найденные пароли:', res_preds[res_preds['Target'] == 1]['Snippet'], sep = '\n')
+#         else:
+#             # Задержка на 1 секунду
+#             time.sleep(1)
 
