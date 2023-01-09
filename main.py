@@ -6,7 +6,8 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 import requests
-import project_program
+
+from project_program import model1, model2
 # from путь к нашей программе
 
 app = FastAPI()
@@ -32,22 +33,16 @@ async def create_upload_file(file: UploadFile = File(...)):
         file.file.close()
 
         
-    with open(file.filename 'r') as f:
-        var = f.readline().split()
-    for path in var:
-        path = path.rstrip()
+    with open(file.filename, 'r') as f:
         # Работа первой модели
-        passwords_mas = model1(path)
+        passwords_mas = model1(file.filename)
         # Работа второй модели
-        res_preds = model2(path)
+        res_preds = model2(file.filename)
         #Файл json с результатом
-        snippets_with_pass = res_preds[res_preds['Target'] == 1]['Snippet']
-        snippets_with_pass.to_json('FindPasswords.json')
+        snippets_with_pass = res_preds[res_preds['Target'] == 1]['Snippet'].tolist()
 
-        #Вывод результата с именем файла и единичками в лог
-        print(path,'Найденные пароли:', res_preds[res_preds['Target'] == 1]['Snippet'], sep = '\n')
     os.remove(file.filename)
-    return {"text": a}
+    return {"snippets": snippets_with_pass}
 
 
 
