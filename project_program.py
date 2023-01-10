@@ -193,7 +193,7 @@ def model2(path):
     check_file = code_to_str(path)
     check_snippets = []
     preds_for_snippets = []
-    for cand_pass in passwords_mas:
+    for cand_pass in model1(path):
         snippets  = context_password(check_file, cand_pass)
         for i in snippets:
             check_snippets.append(i)
