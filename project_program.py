@@ -25,10 +25,47 @@ model = AutoModel.from_pretrained("microsoft/unixcoder-base")
 
 
 #  Загрузка обученной модели кандидата пароля
-model1_candpass = load('models/Model1_candidate_pass.joblib')
+model1_candpass = load('NEW_ML1_CatBOOST')
 
 # Загрузка обученной контекстной модели
-Context_model = load('models/SVM_context_model.joblib')
+Context_model = load('SVM_context_model.joblib')
+
+
+# Считывание кода с файла
+def code_to_str(file_text):
+    code = str()
+    if '.csv' in file_text:
+        file = csv.reader(open(file_text, encoding="utf8"), delimiter=",")
+        for line in file:
+            code += str(line)
+        return code
+    else:
+        for line in open(file_text, encoding='utf8'):
+            code += str(line)
+        return code
+
+
+def input_for_context_model(path_to_file, ntokens = 30):
+    code = code_to_str(path_to_file).split()
+    snippets_mas = []
+    tokens_mas = []
+    c = 0
+    for i, token in enumerate(code):
+        if c < ntokens - 1 and ntokens <= len(code) - i:
+            tokens_mas.append(token)
+            c += 1
+        elif ntokens > len(code) - i:
+            tokens_mas.extend(code[i:len(code)])
+            snippets = " ".join(tokens_mas)
+            snippets_mas.append(snippets)
+            break
+        else:
+            tokens_mas.append(token)
+            c = 0
+            snippets = " ".join(tokens_mas)
+            snippets_mas.append(snippets)
+            tokens_mas = []
+    return snippets_mas
 
 
 def tokenization(file_text):
@@ -36,11 +73,8 @@ def tokenization(file_text):
     tokens += nltk.word_tokenize(file_text)
     #Очистка от знаков препинания:
     tokens = [i for i in tokens if check_ascii(i)]
-    #Очистка от лишних символов:
-    tokens = [i.replace("'", "").replace("`", "").replace("=", "").replace("/", "").replace("\\", "").replace("-", "")
-          .replace(':', '').replace('|', '') for i in tokens]
     #Очистка от пустых элементов и элементов длинной <= 3:
-    tokens = [i for i in tokens if len(i) > 3]
+    tokens = [i for i in tokens if len(i) > 3 and len(i) < 20]
     return tokens
 
 
@@ -109,59 +143,6 @@ def custom_predict(X, threshold):
     return (probs[:, 1] > threshold).astype(int)
 
 
-# Считывание кода с файла
-def code_to_str(file_text):
-    code = str()
-    if '.csv' in file_text:
-        file = csv.reader(open(file_text, encoding="utf8"), delimiter=",")
-        for line in file:
-            code += str(line)
-        return code
-    else:
-        for line in open(file_text, encoding='utf8'):
-            code += str(line)
-        return code
-
-
-# Функция окружения
-def context_password(snippet, password, ntokens = 30):
-    snippet_split = snippet.split() #сплитуем снипет по пробелу
-    result_massiv = []
-    for candidat_pass in range(len(snippet_split)): #Идём по снипету
-        if password in snippet_split[candidat_pass]: #находим пароль в элементе массива
-            ntokens_max = ntokens
-            result = []
-    #вперед
-            if candidat_pass < ntokens:  #Если снипет стоит вначале(например, индекс 5)
-                index_pass = candidat_pass
-                ntokens_max += ntokens - index_pass  #Увеличиваем ntokens_max на нужное кол-во (на 15)
-            if (len(snippet_split) - candidat_pass) <= ntokens_max:  #Если пароль стоит в конце (52 - 5 <= 35, нет)
-                ntokens_f = len(snippet_split) - candidat_pass - 1 #число повторений для цикла
-            else:
-                ntokens_f = ntokens_max #число поторений (35)
-            count_forward = candidat_pass + 1  #начинаем итерацию со следующего после пароля элемента
-            for j in range(ntokens_f):  #итерируемся (35 раз)
-                result.append(snippet_split[count_forward]) #Добавляем по 1 элементу в новый массив
-                count_forward += 1  
-            result.insert(0, snippet_split[candidat_pass])
-    #назад
-            if len(snippet_split) - candidat_pass < ntokens:
-                index_pass = len(snippet_split) - candidat_pass
-                ntokens_max += ntokens + 1 - index_pass
-            if candidat_pass < ntokens_max:
-                ntokens_b = candidat_pass
-            else:
-                ntokens_b = ntokens_max          
-            count_backward = candidat_pass - 1
-            for j in range(ntokens_b):
-                result.insert(0, snippet_split[count_backward])
-                count_backward -= 1
-            result = ' '.join(result) #Преобразуем массив в строку
-            result_massiv.append(result) #Добавляем новую строку к итоговому массиву
-    result_massiv = [el for el, _ in groupby(result_massiv)]    
-    return result_massiv
-
-
 # Векторизация для берта
 def tokenize_for_BERT(snippet):
     code_tokens=tokenizer.tokenize(snippet)
@@ -178,34 +159,43 @@ def drop_duplicates(list):
             n.append(i)
     return n
 
+
 # Функция работы модели кандидата пароля
-def model1(path):
-    input = tokens_prepare_ML1(tokenization(code_to_str(path)))
+def model_cand_pass(path):
+    input = tokens_prepare_ML1(tokenization(model_context(path)))
     X_for_Model1 = input.drop('Input', axis = 1).values
     model1_candpass.predict(X_for_Model1)
-    new_preds = custom_predict(X=X_for_Model1, threshold=0.4)
-    input2 = input['Input'].values
-    passwords_mas = [input2[i] for i in range(len(new_preds)) if new_preds[i] == 1]
+    new_preds = custom_predict(X=X_for_Model1, threshold=0.5)
+    results = {'Snippet': input['Input'].tolist(), 'Target': new_preds}
+    df = pd.DataFrame(results)
+    passwords_mas = df[df['Target'] == 1]['Snippet'].tolist()
     return passwords_mas
 
+
 # Функция работы модели анализа окружения:
-def model2(path):
-    check_file = code_to_str(path)
-    check_snippets = []
+def model_context(path):
+    check_file = input_for_context_model(path)
     preds_for_snippets = []
-    for cand_pass in model1(path):
-        snippets  = context_password(check_file, cand_pass)
-        for i in snippets:
-            check_snippets.append(i)
-    check_snippets = drop_duplicates(check_snippets)  # Удаление дубликатов
-    for snippet in check_snippets:
+    snippet_mas = []
+    for snippet in check_file:
         tokens_ids = tokenize_for_BERT(snippet)
         context_embeddings = model(torch.tensor(tokens_ids)[None,:])[0]
         pred =  Context_model.predict([context_embeddings[0][0][:].detach().numpy()])
-        preds_for_snippets.append(pred[0])
-    results = {'Snippet': check_snippets, 'Target': preds_for_snippets}
-    df = pd.DataFrame(results)
-    return df
+        if pred == 1:
+            snippet_mas.append(snippet)
+    return " ".join(snippet_mas)
+
+
+def find_secrets(path):
+    result = {}
+    passwords_mas = model_cand_pass(path)
+    with open(path) as f:
+        mylist = [line.rstrip('\n') for line in f]
+        for i, string in enumerate(mylist):
+            for password in passwords_mas:
+                if password in string:
+                    result.update({i:string})
+    return(result)
 
 
 # if __name__ == '__main__':
