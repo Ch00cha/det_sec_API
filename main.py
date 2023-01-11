@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
-from project_program import model1, model2
+from project_program import find_secrets
 # from путь к нашей программе
 
 app = FastAPI()
@@ -34,12 +34,10 @@ async def create_upload_file(file: UploadFile = File(...)):
         
     with open(file.filename, 'r') as f:
         # Работа второй модели
-        res_preds = model2(file.filename)
-        #Файл json с результатом
-        snippets_with_pass = res_preds[res_preds['Target'] == 1]['Snippet'].tolist()
+        res_preds = find_secrets(file.filename)
 
     os.remove(file.filename)
-    return dict(zip([i for i in range(len(snippets_with_pass))], snippets_with_pass))
+    return res_preds 
 
 if __name__ == "__main__":
     uvicorn.run("main:app", port=8000, host="127.0.0.1", reload = True)
