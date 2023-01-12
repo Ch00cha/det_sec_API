@@ -13,13 +13,10 @@ from project_program import find_secrets
 app = FastAPI()
 # app.mount("/static", StaticFiles(directory = "public"))
 
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
 
-# @app.get("/")
-# async def hello():
-#    return {"message": "Hello world"}
+@app.get("/")
+async def hello():
+    return {"message": "Hello world"}
 
 
 @app.post("/uploadfile")
