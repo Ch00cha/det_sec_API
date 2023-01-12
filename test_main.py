@@ -1,13 +1,8 @@
-!pip httpx
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from main import app
 
-app = FastAPI()
 client = TestClient(app)
-
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
   
 def test_read_main():
   response = client.get('/')

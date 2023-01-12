@@ -14,7 +14,6 @@ app = FastAPI()
 # app.mount("/static", StaticFiles(directory = "public"))
 
 
-
 @app.get("/")
 async def hello():
     return {"message": "Hello world"}
