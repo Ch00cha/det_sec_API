@@ -25,10 +25,10 @@ model = AutoModel.from_pretrained("microsoft/unixcoder-base")
 
 
 #  Загрузка обученной модели кандидата пароля
-model1_candpass = load('NEW_ML1_CatBOOST')
+model1_candpass = load('models/NEW_ML1_CatBOOST')
 
 # Загрузка обученной контекстной модели
-Context_model = load('SVM_context_model.joblib')
+Context_model = load('models/SVM_context_model.joblib')
 
 
 # Считывание кода с файла
