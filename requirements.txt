@@ -7,3 +7,4 @@ uvicorn == 0.20.0
 fastapi == 0.88.0
 pyngrok == 5.2.1
 httpx
+catboost == 1.1.1
