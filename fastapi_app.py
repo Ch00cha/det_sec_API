@@ -22,10 +22,24 @@ async def hello():
     return {"message": "Hello world"}
 
 
-# @app.post("/predict")
-# async def predict(item: Item):
-#     prediction = find_secrets(item.text)
-#     return prediction
+@app.post("/uploadfile")
+async def create_upload_file(file: UploadFile = File(...)):
+    try:
+        # content = file.file.read()  
+        with open(file.filename, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+    except Exception:
+        return {"message":"ERROR uploading file"}
+    finally:
+        file.file.close()
+
+        
+    with open(file.filename, 'r') as f:
+        # Работа второй модели
+        res_preds = find_secrets(file.filename)
+    f_name = file.filename
+    os.remove(file.filename)
+    return {f_name : res_preds} 
 
 
 if __name__ == "__main__":
