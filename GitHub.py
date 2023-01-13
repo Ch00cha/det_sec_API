@@ -1,3 +1,34 @@
+import requests
+import json
+import base64
+
+
+def github_scan_rep(repository_path, file_path = ''):
+    headers = {}
+    check = {}
+    url = f'https://api.github.com/repos/{repository_path}/contents/{file_path}'
+    r = requests.get(url, headers=headers)
+    data = r.json()
+    if file_path != '' and data['type']=='file':
+        file_content = data['content']
+        name = data['name']
+        file_content_encoding = data.get('encoding')
+        if file_content_encoding == 'base64':
+            file_content = base64.b64decode(file_content).decode()
+            check.update({name: file_content})
+    else:
+        for each_file in data:
+            if each_file['type']=='file':
+                name = each_file['name']
+                each_file = requests.get(str(each_file['url']), headers = headers).json()
+                content = each_file['content']
+                encoding = each_file['encoding']
+                if encoding == 'base64':
+                    content = base64.b64decode(content).decode()
+                    check.update({name: content})
+    return check
+
+
 # # from github import Github
 
 # # g = Github()
