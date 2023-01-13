@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
-from project_program import find_secrets
+# from project_program import find_secrets
 # from путь к нашей программе
 
 class Item(BaseModel):
@@ -22,10 +22,10 @@ async def hello():
     return {"message": "Hello world"}
 
 
-@app.post("/predict")
-async def predict(item: Item):
-    prediction = find_secrets(item.text)
-    return prediction
+# @app.post("/predict")
+# async def predict(item: Item):
+#     prediction = find_secrets(item.text)
+#     return prediction
 
 
 if __name__ == "__main__":
