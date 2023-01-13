@@ -36,7 +36,7 @@ async def create_upload_file(file: UploadFile = File(...)):
         
     with open(file.filename, 'r') as f:
         # Работа второй модели
-        res_preds = find_secrets(file.filename)
+        res_preds = len(file.filename)
     f_name = file.filename
     os.remove(file.filename)
     return {f_name : res_preds} 
