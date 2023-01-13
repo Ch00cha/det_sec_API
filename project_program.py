@@ -1,11 +1,10 @@
-import yaml
 import pandas as pd
 import numpy as np
 from transformers import AutoTokenizer, AutoModel
 import torch
 from itertools import groupby
 import csv
-from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
@@ -15,10 +14,9 @@ import nltk.data
 nltk.download('punkt')
 import string
 import re
-from joblib import dump, load
+from joblib import load
 from sys import argv
 import math
-import time
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/unixcoder-base")
 model = AutoModel.from_pretrained("microsoft/unixcoder-base")
@@ -165,7 +163,7 @@ def model_cand_pass(path):
     input = tokens_prepare_ML1(tokenization(model_context(path)))
     X_for_Model1 = input.drop('Input', axis = 1).values
     model1_candpass.predict(X_for_Model1)
-    new_preds = custom_predict(X=X_for_Model1, threshold=0.5)
+    new_preds = custom_predict(X=X_for_Model1, threshold=0.4)
     results = {'Snippet': input['Input'].tolist(), 'Target': new_preds}
     df = pd.DataFrame(results)
     passwords_mas = df[df['Target'] == 1]['Snippet'].tolist()
@@ -194,30 +192,7 @@ def find_secrets(path):
         for i, string in enumerate(mylist):
             for password in passwords_mas:
                 if password in string:
-                    result.update({i:string})
+                    result.update({i+1:string})
     return(result)
 
-
-# if __name__ == '__main__':
-#     while True:
-#         # Проверка наличия нового файла
-#         if new_file_available(): #ФУНКЦИЯ ПОЛУЧЕНИЯ НОВОГО ФАЙЛА(НЕОБХОДИМО ПРОПИСАТЬ)
-#             # Обработка нового файла
-#             with open(work_dir + 'pathes.txt', 'r') as f:
-#                 var = f.readline().split()
-#             for path in var:
-#                 path = path.rstrip()
-#                 # Работа первой модели
-#                 passwords_mas = model1(path)
-#                 # Работа второй модели
-#                 res_preds = model2(path)
-#                 #Файл json с результатом
-#                 snippets_with_pass = res_preds[res_preds['Target'] == 1]['Snippet']
-#                 snippets_with_pass.to_json('FindPasswords.json')
-
-#                 #Вывод результата с именем файла и единичками в лог
-#                 print(path,'Найденные пароли:', res_preds[res_preds['Target'] == 1]['Snippet'], sep = '\n')
-#         else:
-#             # Задержка на 1 секунду
-#             time.sleep(1)
-
+print(find_secrets("/home/antosha/Desktop/test_df0.txt"))
