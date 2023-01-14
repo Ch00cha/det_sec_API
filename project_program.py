@@ -194,5 +194,3 @@ def find_secrets(path):
                 if password in string:
                     result.update({i+1:string})
     return(result)
-
-print(find_secrets("/home/antosha/Desktop/test_df0.txt"))

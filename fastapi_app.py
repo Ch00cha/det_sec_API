@@ -30,7 +30,6 @@ app = FastAPI()
 async def hello():
     return {"message": "Hello world"}
 
-
 @app.post("/predict")
 async def predict(item: Item):
     result = {}
@@ -41,9 +40,6 @@ async def predict(item: Item):
         result.update({file_path : predictions})
     return result
     
-
-
-
 @app.post("/uploadfile")
 async def create_upload_file(file: UploadFile = File(...)):
     try:
