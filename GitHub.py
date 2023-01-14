@@ -1,8 +1,3 @@
-import requests
-import json
-import base64
-
-
 def github_scan_rep(repository_path):
     headers = {}
     check = {}
@@ -21,6 +16,9 @@ def github_scan_rep(repository_path):
     if file_path != '' and data['type']=='file':
         content = data['content']
         name = data['name']
+        encoding = data['encoding']
+        if encoding == 'base64':
+            content = base64.b64decode(content).decode()
         names.append(name)
         contents.append(content)
     else:
@@ -29,6 +27,9 @@ def github_scan_rep(repository_path):
                 name = each_file['name']
                 each_file = requests.get(str(each_file['url']), headers = headers).json()
                 content = each_file['content']
+                encoding = each_file['encoding']
+                if encoding == 'base64':
+                    content = base64.b64decode(content).decode()
                 names.append(name)
                 contents.append(content)
     check.update({'name': names, 'content': contents})
