@@ -8,7 +8,6 @@ def test_read_main():
   response = client.get('/')
   assert response.status_code == 200
   assert response.json() == {"message": "Hello world"}
-  assert "status" in result
 
 # def test_with_pass():
 #   response = 
