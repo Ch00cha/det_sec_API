@@ -3,30 +3,36 @@ import json
 import base64
 
 
-def github_scan_rep(repository_path, file_path = ''):
+def github_scan_rep(repository_path):
     headers = {}
     check = {}
-    url = f'https://api.github.com/repos/{repository_path}/contents/{file_path}'
+    names = []
+    contents = []
+    get_username = repository_path.split('/')[3]
+    get_repository_name = repository_path.split('/')[4]
+    file_path = ''
+    if len(repository_path.split('/')) > 5:
+        get_path = repository_path.split('/')[7:]
+        for i in get_path:
+            file_path += i + '/'
+    url = f'https://api.github.com/repos/{get_username}/{get_repository_name}/contents/{file_path}'
     r = requests.get(url, headers=headers)
     data = r.json()
     if file_path != '' and data['type']=='file':
-        file_content = data['content']
+        content = data['content']
         name = data['name']
-        file_content_encoding = data.get('encoding')
-        if file_content_encoding == 'base64':
-            file_content = base64.b64decode(file_content).decode()
-            check.update({name: file_content})
+        names.append(name)
+        contents.append(content)
     else:
         for each_file in data:
             if each_file['type']=='file':
                 name = each_file['name']
                 each_file = requests.get(str(each_file['url']), headers = headers).json()
                 content = each_file['content']
-                encoding = each_file['encoding']
-                if encoding == 'base64':
-                    content = base64.b64decode(content).decode()
-                    check.update({name: content})
-    return check
+                names.append(name)
+                contents.append(content)
+    check.update({'name': names, 'content': contents})
+    return json.dumps(check)
 
 
 # # from github import Github
