@@ -22,10 +22,10 @@ model = AutoModel.from_pretrained("microsoft/unixcoder-base")
 
 
 #  Загрузка обученной модели кандидата пароля
-model1_candpass = load('NEW_ML1_CatBOOST')
+model1_candpass = load('models/NEW_ML1_CatBOOST')
 
 # Загрузка обученной контекстной модели
-Context_model = load('SVM_context_model.joblib')
+Context_model = load('models/SVM_context_model.joblib')
 
 
 # Считывание кода с файла
@@ -170,6 +170,8 @@ def model_cand_pass(path):
         results = {'Snippet': input['Input'].tolist(), 'Target': new_preds}
         df = pd.DataFrame(results)
         passwords_mas = df[df['Target'] == 1]['Snippet'].tolist()
+        if passwords_mas == []:
+            return 'Пароли не найдены'
         return passwords_mas
 
 
