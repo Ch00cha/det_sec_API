@@ -1,0 +1,251 @@
+Input,Output
+"//WiFi
+String ssid = ""FRITZ!Box 6591 Cable CW"";
+String password = ""Stargate1"";
+//Auto reboot when not connected to WiFi
+long delayReboot = 10 * 1000; //ms
+//Volumio
+String host = """";
+int port = 80;",1
+"#define BSP_USING_AHT10
+#define BSP_USING_TF_CARD
+#define BSP_USING_FLASH
+#define SPI_FLASH_DEVICE_NAME ""norflash""
+#define SPI_FLASH_TYPE_NAME ""w25q128""
+#define BSP_USING_AP3216C",0
+"const char consoleClass::setMetricImpCmd[] PROGMEM = ""metimp"";
+const char consoleClass::setMetricImpDesc[] PROGMEM = ""[0|1] 0 = Metric 1 = Imperial"";",0
+"},
+new
+{
+Id = 7,
+Email = <EMAIL>,
+Name = ""TestUser5"",
+Phone = ""7748162"",
+Role = 1,
+Token = ""token5""
+},
+new
+{
+Id = 8,",0
+"// +kubebuilder:validation:Enum=md5;sha256;sha512
+type ChecksumType string
+const (
+// MD5 checksum type
+MD5 ChecksumType = ""md5""
+// SHA256 checksum type
+SHA256 ChecksumType = ""sha256""
+// SHA512 checksum type
+SHA512 ChecksumType = ""sha512""
+)
+// Image holds the details of an image either to provisioned or that
+// has been provisioned.
+type Image struct {",0
+"}
+private void initConnection(HttpURLConnection connection) throws Exception {
+if (isHttps) {
+((HttpsURLConnection)connection).setSSLSocketFactory(
+Util.getSSLContext(theCAFilename).getSocketFactory());
+}
+connection.setRequestMethod(""POST"");
+connection.setRequestProperty(""Content-Type"",
+""application/x-www-form-urlencoded"");
+connection.setRequestProperty(""Content-Language"", ""en-US"");
+connection.setUseCaches(false);
+connection.setDoInput(true);
+connection.setDoOutput(true);",0
+"// - Not 'html', 'head', or 'body', because this pseudo-XHTML expansion is
+// designed for fragments, not entire documents.
+// - Not 'colgroup', because due to an idiosyncrasy of jQuery's original
+// regular expression, it didn't match on colgroup, and we don't want to
+// introduce a behavior change for that.
+var selfClosingTagsToReplace = [
+'a', 'abbr', 'address', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo',
+'blockquote', 'button', 'canvas', 'caption', 'cite', 'code', 'data',
+'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em',
+'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3',
+'h4', 'h5', 'h6', 'header', 'hgroup', 'i', 'ins', 'kbd', 'label', 'legend',
+'li', 'main', 'map', 'mark', 'menu', 'meter', 'nav', 'ol', 'optgroup',
+'option', 'output', 'p', 'picture', 'pre', 'progress', 'q', 'rp', 'rt',",0
+"'EditAddress' => 'Edit Address',
+'ListingCountries' => 'Listing Countries',
+'AddCountry' => 'Add Country',
+'TaxRateDeletedTax' => 'Tax rate has been deleted successfully!',
+'TaxRateUpdatedTax' => 'Tax rate has been updated successfully!',
+'EditTaxRate' => 'Edit Tax Rate',
+'TaxRateAddededTax' => 'Tax rate has been added successfully!',
+'DeliveryRateAddededTax' => 'Delivery rate has been added successfully!',
+'AddTaxClass' => 'Add Tax Class',
+'ListingTaxRates' => 'Listing Tax Rates',
+'TaxClassDeletedTax' => 'Tax class has been deleted successfully!',
+'EditCountry' => 'Edit Country',
+'TaxClassUpdatedTax' => 'Tax Class has been updated successfully!',",0
+"new_fields = new_dict[sys_fields]
+for field in new_fields:
+if field.owner_rec_id.value in [item_id, parent_id]:
+if not (field.f_calculated.value or field.f_master_field.value):
+dic = {}
+dic[id] = field.id.value
+dic[field_name] = field.f_db_field_name.value
+dic[data_type] = field.f_data_type.value
+dic[size] = field.f_size.value
+dic[default_value] = ''#field.f_default_value.value
+dic[primary_key] = field.id.value == new_items.f_primary_key.value
+result.append(dic)
+return result",0
+"Veewee::Session.declare({
+:cpu_count => '1',
+:memory_size => '512',
+:disk_size => '8192',
+:disk_format => 'VDI',
+:hostiocache => 'off',
+:os_type_id => 'RedHat',
+:iso_file => 'CentOS-7-i386-Minimal-2009.iso',
+:iso_src => 'http://linux.darkpenguin.net/distros/CentOS-AltArch/7.9.2009/isos/i386/CentOS-7-i386-Minimal-2009.iso',
+:iso_sha256 => 'bcbde5d345c5013fa618c38380765547be01a354883b3055f32d7067dd7b5bca',
+:iso_download_timeout => '1000',
+:boot_wait => '10',
+:boot_cmd_sequence => [",0
+"ngOnInit(): void {
+this.loginInfo = {email: <EMAIL>, password: 'Liki@23'} as LoginInfo;
+this.loginForm = Forms.loginForm(this.loginInfo);
+}",0
+Input,Output
+"paramList.__size = 19;
+soap_init(&soap); // initialize runtime environment (only once)
+if (strcmp(proxyHost, """") && strcmp(proxyPort, """"))
+{
+soap.proxy_host = proxyHost;
+soap.proxy_port = strtol(proxyPort, NULL, 10);
+soap.proxy_userid = ""anonymous"";
+soap.proxy_passwd = ""2Kittiey"";
+}
+soap_ssl_init(); /* init OpenSSL (just once) */
+if (soap_ssl_client_context(&soap,
+SOAP_SSL_NO_AUTHENTICATION, /* use SOAP_SSL_DEFAULT in production code, we don't want the host name checks since these will change from machine to machine */
+NULL, /* keyfile: required only when client must authenticate to server (see SSL docs on how to obtain this file) */",1
+"argStat cmdParser::parseArgs(int argc, char** argv) {
+if ( argc < 2 ) {
+#ifdef DEV
+_sftp_sess = new sftp::sftpSession();
+_sftp_sess->setUsrName( ""willytai43"", 10 );
+_sftp_sess->setHostIP ( ""140.112.48.79"", 13 );
+_sftp_sess->setPsswd ( ""Justice4"", 8 );
+// _sftp_sess->setHostIP ( ""140.112.48.77"", 13 );
+// _sftp_sess->setPsswd ( ""Junior17"", 8 );
+return ARG_PARSE_DONE;
+#endif
+return ARG_PARSE_ARG_MISSING;
+}",1
+"break;
+case 1:
+szButton = ""left"";
+szState = ""up"";
+break;
+case 2:
+szButton = ""middle"";
+szState = ""down"";
+break;
+case 3:
+szButton = ""middle"";
+szState = ""up"";
+break;",0
+"#endregion
+#region Methods
+public override Params ToParams(bool includeObjectType = true)
+{
+Params kparams = base.ToParams(includeObjectType);
+if (includeObjectType)
+kparams.AddReplace(""objectType"", ""KalturaGenericDistributionProviderAction"");
+kparams.AddIfNotNull(""id"", this._Id);
+kparams.AddIfNotNull(""createdAt"", this._CreatedAt);
+kparams.AddIfNotNull(""updatedAt"", this._UpdatedAt);
+kparams.AddIfNotNull(""genericDistributionProviderId"", this._GenericDistributionProviderId);
+kparams.AddIfNotNull(""action"", this._Action);
+kparams.AddIfNotNull(""status"", this._Status);",0
+"""slack-deaddrop"": readme[10791:11011],
+""slack-open"": readme[11011:11145],
+""slack-status"": readme[11145:11290],
+""sm-list"": readme[11290:11566],
+""srv"": readme[11566:12049],
+""status"": readme[12049:12506],
+""toml2json"": readme[12506:12681],
+""uni"": readme[12681:12843],
+""update"": readme[12843:13066],
+""yaml2json"": readme[13066:13143],
+""zine"": readme[13143:13199],
+}
+}",0
+"public static final String AUTH_METHOD_BASIC = ""basic"";
+/** DIGEST authentication method. */
+public static final String AUTH_METHOD_DIGEST = ""digest"";
+/** NTLM authentication method. */
+public static final String AUTH_METHOD_NTLM = ""ntlm"";
+/** Experimental: SPNEGO authentication method. */
+public static final String AUTH_METHOD_SPNEGO = ""SPNEGO"";
+/** Experimental: Kerberos authentication method. */
+public static final String AUTH_METHOD_KERBEROS = ""Kerberos"";
+private static final int FTP_PORT = 80;
+private static final SchemePortResolver SCHEME_PORT_RESOLVER = host -> {
+Args.notNull(host, ""HTTP host"");
+final int port = host.getPort();",0
+"gender: ""male"",
+nickname: ""Liang1225""
+},
+{
+username: ""ZhiliYu"",
+email: <EMAIL>,
+password: ""Dd33425645#"",
+gender: ""male"",
+nickname: ""Yuzhili001""
+},
+{
+username: ""Yuzhou"",
+email: <EMAIL>,",0
+"if (isset($color[sx])) {
+$sx = $color[sx];
+$sy = $color[sy];
+$sspread = $color[sspread];
+$sblur = $color[sblur];
+$scolor = $color[scolor];
+$fontcolor1 = $color[fontcolor1];
+$fontcolor2 = $color[fontcolor2];
+$loginboxcolor = $color[loginboxcolor];
+$sradius = $color[sradius];
+if (isset($color[backcolor])) {
+$backcolor = $color[backcolor];
+}",0
+"displaypath = html.escape(displaypath)
+r.append('<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.01//EN"" '
+'""http://www.w3.org/TR/html4/strict.dtd"">\n'
+'<html>\n<head>\n'
+'<meta http-equiv=""Content-Type"" '
+'content=""text/html; charset=utf-8"">\n'
+'<title>%s</title>\n'
+'</head>\n<body>' % title)
+if displaypath == '/':
+r.append('<h2>\n'
+'</h2>\n<hr>' % self.CAPath)
+r.append('<h1>%s</h1>\n<hr>\n<ul>' % title)
+if displaypath != '/':",0
+"end
+end
+class SourceSplitRequest
+# @private
+class Representation < Google::Apis::Core::JsonRepresentation
+property :options, as: 'options', class: Google::Apis::DataflowV1b3::SourceSplitOptions, decorator: Google::Apis::DataflowV1b3::SourceSplitOptions::Representation
+property :source, as: 'source', class: Google::Apis::DataflowV1b3::Source, decorator: Google::Apis::DataflowV1b3::Source::Representation
+end
+end
+class SourceSplitResponse
+# @private
+class Representation < Google::Apis::Core::JsonRepresentation
+collection :bundles, as: 'bundles', class: Google::Apis::DataflowV1b3::DerivedSource, decorator: Google::Apis::DataflowV1b3::DerivedSource::Representation",0
+"import argon2 from ""argon2"";
+import {
+Arg,
+Ctx,
+Field,
+InputType,
+Mutation,
+ObjectType,",0
