@@ -1,7 +1,7 @@
 # from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi_app import app, find_secrets
-from api_requests import request_to_det_sec_API
+from api_requests import github_scan_rep, request_to_det_sec_API
 
 client = TestClient(app)
 
