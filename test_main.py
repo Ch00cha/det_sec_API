@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from main import app
-from project_program import find_secrets
+from fastapi_app import app
+from fastapi_app import find_secrets
 
 client = TestClient(app)
 
