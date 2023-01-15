@@ -37,6 +37,9 @@ def test_scan_rep():
                    'SW1wRGVzY1tdIFBST0dNRU0gPSAiIlswfDFdIDAgPSBNZXRyaWMgMSA9IElt\n'
                    'cGVyaWFsIiI7Ig==\n',
         'name': 'test_file.txt'}]
+    predict = request_to_det_sec_API('https://github.com/Ch00cha/det_sec_API/blob/main/test_file.txt')
+    assert predict == {'test_file.txt': {'3': 'String password = ""Stargate1"";'}}  
+    
     
 # def test_with_pass():
 #     response = client.post('/uploadfile', input = 'test_file.txt')
