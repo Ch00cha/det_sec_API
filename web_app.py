@@ -1,8 +1,8 @@
 import streamlit as st
 from api_requests import request_to_det_sec_API
 
-st.title('Детекция секретов в коде')
-st.markdown('Проверьте свой репозиторий или файл из репозитория на наличие  **секретов**.')
+st.title('Детекция паролей в коде')
+st.markdown('Проверьте свой репозиторий или файл из репозитория на наличие  **паролей**.')
 st.markdown('Вставьте сюда :point_down: _ссылку_ на репозиторий или файл')
 url = st.text_input('dd', '', placeholder='URL', label_visibility="hidden")
 
