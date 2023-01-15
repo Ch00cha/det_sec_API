@@ -172,7 +172,8 @@ def model_cand_pass(path):
         passwords_mas = df[df['Target'] == 1]['Snippet'].tolist()
         if passwords_mas == []:
             return 'Пароли не найдены'
-        return passwords_mas
+        else:
+            return passwords_mas
 
 
 # Функция работы модели анализа окружения:
