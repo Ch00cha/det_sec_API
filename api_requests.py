@@ -11,33 +11,37 @@ def github_scan_rep(repository_path):
     check = []
     names = []
     contents = []
-    get_username = repository_path.split('/')[3]
-    get_repository_name = repository_path.split('/')[4]
-    file_path = ''
-    if len(repository_path.split('/')) > 5:
-        get_path = repository_path.split('/')[7:]
-        for i in get_path:
-            file_path += i + '/'
-    url = f'https://api.github.com/repos/{get_username}/{get_repository_name}/contents/{file_path}'
-    r = requests.get(url, headers=headers)
-    if str(r) == '<Response [403]>':
-        return 'Превышено количество запросов'
-    elif str(r) == '<Response [404]>':
+    repository_path_list = repository_path.split('/')
+    if len(repository_path_list) < 5:
         return 'Неверный url, либо репозиторий является приватным'
     else:
-        data = r.json()
-        if file_path != '' and data['type']=='file':
-            name = data['name']
-            content = data['content']
-            check.append({'name':name, 'content': content})
+        get_username = repository_path_list[3]
+        get_repository_name = repository_path_list[4]
+        file_path = ''
+        if len(repository_path_list) > 5:
+            get_path = repository_path_list[7:]
+            for i in get_path:
+                file_path += i + '/'
+        url = f'https://api.github.com/repos/{get_username}/{get_repository_name}/contents/{file_path}'
+        r = requests.get(url, headers=headers)
+        if str(r) == '<Response [403]>':
+            return 'Превышено количество запросов'
+        elif str(r) == '<Response [404]>':
+            return 'Неверный url, либо репозиторий является приватным'
         else:
-            for each_file in data:
-                if each_file['type']=='file':
-                    name = each_file['name']
-                    each_file = requests.get(str(each_file['url']), headers = headers).json()
-                    content = each_file['content']
-                    check.append({'name':name, 'content': content})
-        return check
+            data = r.json()
+            if file_path != '' and data['type']=='file':
+                name = data['name']
+                content = data['content']
+                check.append({'name':name, 'content': content})
+            else:
+                for each_file in data:
+                    if each_file['type']=='file':
+                        name = each_file['name']
+                        each_file = requests.get(str(each_file['url']), headers = headers).json()
+                        content = each_file['content']
+                        check.append({'name':name, 'content': content})
+            return check
 
 
 def request_to_det_sec_API(url):
