@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from fast_api import app
-from model_app import find_secrets
+from fastapi_app import app
+from fastapi_app import find_secrets
 
 client = TestClient(app)
 
@@ -17,13 +17,10 @@ def test_model():
     assert prediction == {3: 'String password = ""Stargate1"";'}
 
 
-# def test_with_pass():
-#     response = client.post('/predict',
-#         input = файл
-#     )
-#   res = response.input()
-#   assert response.status_code == 200
-#   assert res == ?
+def test_with_pass():
+    response = client.post('/uploadfile', input = 'snipet_with_pass.txt')
+    assert response.status_code == 200
+    assert response == {3: 'String password = ""Stargate1"";'}
 
 # def test_without_pass():
   
