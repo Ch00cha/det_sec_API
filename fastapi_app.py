@@ -6,7 +6,7 @@ from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 from typing import List
 import uvicorn
-from project_program import find_secrets
+from model_app import find_secrets
 
 
 def find_secrets_in_text(content):
