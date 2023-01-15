@@ -6,7 +6,7 @@ st.markdown('Проверьте свой репозиторий или файл 
 st.markdown('Вставьте сюда :point_down: _ссылку_ на репозиторий или файл')
 url = st.text_input('dd', '', placeholder='URL', label_visibility="hidden")
 
-if st.button('Найти все секреты'):
+if st.button('Найти все пароли'):
     with st.spinner('Производится сканирование ваших секретиков...'):
             response = request_to_det_sec_API(url)
             st.markdown('**Результаты:**')
