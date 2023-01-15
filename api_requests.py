@@ -1,6 +1,11 @@
 import requests
 import json
 
+def read_ip():
+    file = open("/tmp/myipnow.txt", "r")
+    ip = file.read()
+    return ip
+
 def github_scan_rep(repository_path):
     headers = {}
     check = []
@@ -32,6 +37,7 @@ def github_scan_rep(repository_path):
 def request_to_det_sec_API(url):
     data = github_scan_rep(url)
     data = {"accept": data}
-    r = requests.post('http:detsec.ddns.net/predict',  data = json.dumps(data)).json()
+    ip = read_ip()
+    r = requests.post(f'http://{ip}:8000/predict',  data = json.dumps(data)).json()
     return r
 
