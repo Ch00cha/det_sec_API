@@ -1,7 +1,7 @@
 # from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi_app import app, find_secrets
-from api_requests import github_scan_rep, request_to_det_sec_API
+from api_requests import github_scan_rep
 
 client = TestClient(app)
 
@@ -22,7 +22,17 @@ def test_model_without_pass():
     assert prediction == 'Пароли не найдены'
 
     
-def test_scan_rep():
+def test_model_with_pass2():
+    prediction = find_secrets('test_file2.txt')
+    assert prediction == {4: 'String password = ""Stargate1"";', 121: 'soap.proxy_passwd = ""2Kittiey"";', 193: 'nickname: ""Liang1225""', 198: 'password: ""Dd33425645#"",', 200: 'nickname: ""Yuzhili001""'}
+    
+    
+def test_model_without_pass2():
+    prediction = find_secrets('model_app.py')
+    assert prediction == 'Пароли не найдены'
+    
+    
+def test_scan_file():
     result_scan_rep = github_scan_rep('https://github.com/Ch00cha/det_sec_API/blob/main/test_file.txt')
     assert result_scan_rep == [   {   'content': 'Ii8vV2lGaQpTdHJpbmcgc3NpZCA9ICIiRlJJVFohQm94IDY1OTEgQ2FibGUg\n'
                    'Q1ciIjsKU3RyaW5nIHBhc3N3b3JkID0gIiJTdGFyZ2F0ZTEiIjsKLy9BdXRv\n'
@@ -38,25 +48,12 @@ def test_scan_rep():
                    'SW1wRGVzY1tdIFBST0dNRU0gPSAiIlswfDFdIDAgPSBNZXRyaWMgMSA9IElt\n'
                    'cGVyaWFsIiI7Ig==\n',
         'name': 'test_file.txt'}]
-#     predict = request_to_det_sec_API('https://github.com/Ch00cha/det_sec_API/blob/main/test_file.txt')
-#     assert predict.status_code == 200
-#     assert predict == {'test_file.txt': {'3': 'String password = ""Stargate1"";'}}  
     
     
-def test_parse_repository():
+def test_scan_repository():
     result_scan_rep = github_scan_rep('https://github.com/mihakremen/det_sec')
     files_names = []
     for file in result_scan_rep:
         files_names.append(file['name'])
     assert files_names == ['ProjectProgram.py', 'README.md', 'Test_with_pass.txt', 'Test_without_pass.txt', 'action.yml', 'requirements.txt', 'test.py']
-#     predict = request_to_det_sec_API('https://github.com/mihakremen/det_sec')
-#     assert predict.status_code == 200
-#     assert predict == {   'ProjectProgram.py': 'Пароли не найдены',
-#     'README.md': 'Пароли не найдены',
-#     'Test_with_pass.txt': {   '20': "$cfg_smtp_password = 'Shadow199';",
-#                               '4': "$mail->Port='465';"},
-#     'Test_without_pass.txt': 'Пароли не найдены',
-#     'action.yml': 'Пароли не найдены',
-#     'requirements.txt': 'Пароли не найдены',
-#     'test.py': 'Пароли не найдены'}
     
