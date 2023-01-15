@@ -1,5 +1,4 @@
 import os
-import time
 import shutil
 import base64
 from fastapi import FastAPI, File, UploadFile
