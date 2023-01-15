@@ -10,11 +10,10 @@ def test_read_main():
     response = client.get('/')
     assert response.status_code == 200
     assert response.json() == {"message": "Hello world"}
-#   assert "status" in result
 
 
 def test_model():
-    prediction = find_secrets('https://api.github.com/repos/Ch00cha/det_sec_API/contents/snipet_with_pass.txt')
+    prediction = find_secrets('https://github.com/Ch00cha/det_sec_API/blob/main/snipet_with_pass.txt')
     assert prediction == {3: 'String password = ""Stargate1"";'}
 
 
