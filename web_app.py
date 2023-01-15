@@ -1,5 +1,7 @@
 import streamlit as st
 import numpy as np
+from fastapi_app import app
+
 st.title('Детекция секретов в коде')
 st.markdown('Проверьте свой репозиторий или файл из репозитория на наличие  **секретов**.')
 st.markdown('Вставьте сюда :point_down: _ссылку_ на репозиторий или файл')
