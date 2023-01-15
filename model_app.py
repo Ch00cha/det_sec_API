@@ -4,7 +4,6 @@ from transformers import AutoTokenizer, AutoModel
 import torch
 from itertools import groupby
 import csv
-# from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
@@ -23,10 +22,10 @@ model = AutoModel.from_pretrained("microsoft/unixcoder-base")
 
 
 #  Загрузка обученной модели кандидата пароля
-model1_candpass = load('models/NEW_ML1_CatBOOST')
+model1_candpass = load('NEW_ML1_CatBOOST')
 
 # Загрузка обученной контекстной модели
-Context_model = load('models/SVM_context_model.joblib')
+Context_model = load('SVM_context_model.joblib')
 
 
 # Считывание кода с файла
@@ -160,14 +159,18 @@ def drop_duplicates(list):
 
 # Функция работы модели кандидата пароля
 def model_cand_pass(path):
-    input = tokens_prepare_ML1(tokenization(model_context(path)))
-    X_for_Model1 = input.drop('Input', axis = 1).values
-    model1_candpass.predict(X_for_Model1)
-    new_preds = custom_predict(X=X_for_Model1, threshold=0.4)
-    results = {'Snippet': input['Input'].tolist(), 'Target': new_preds}
-    df = pd.DataFrame(results)
-    passwords_mas = df[df['Target'] == 1]['Snippet'].tolist()
-    return passwords_mas
+    input = model_context(path)
+    if input == 'Пароли не найдены':
+        return 'Пароли не найдены'
+    else:
+        input = tokens_prepare_ML1(tokenization(input))
+        X_for_Model1 = input.drop('Input', axis = 1).values
+        model1_candpass.predict(X_for_Model1)
+        new_preds = custom_predict(X=X_for_Model1, threshold=0.4)
+        results = {'Snippet': input['Input'].tolist(), 'Target': new_preds}
+        df = pd.DataFrame(results)
+        passwords_mas = df[df['Target'] == 1]['Snippet'].tolist()
+        return passwords_mas
 
 
 # Функция работы модели анализа окружения:
@@ -181,16 +184,22 @@ def model_context(path):
         pred =  Context_model.predict([context_embeddings[0][0][:].detach().numpy()])
         if pred == 1:
             snippet_mas.append(snippet)
-    return " ".join(snippet_mas)
+    if snippet_mas == []:
+        return 'Пароли не найдены'
+    else:
+        return " ".join(snippet_mas)
 
 
 def find_secrets(path):
     result = {}
     passwords_mas = model_cand_pass(path)
-    with open(path) as f:
-        mylist = [line.rstrip('\n') for line in f]
-        for i, string in enumerate(mylist):
-            for password in passwords_mas:
-                if password in string:
-                    result.update({i+1:string})
-    return(result)
+    if passwords_mas == 'Пароли не найдены':
+        return 'Пароли не найдены'
+    else:
+        with open(path) as f:
+            mylist = [line.rstrip('\n') for line in f]
+            for i, string in enumerate(mylist):
+                for password in passwords_mas:
+                    if password in string:
+                        result.update({i+1:string})
+        return(result)
