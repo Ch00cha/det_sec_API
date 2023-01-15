@@ -18,9 +18,7 @@ def test_model():
 
 
 def test_with_pass():
-    response = client.post('/uploadfile',
-        input = 'snipet_with_pass.txt'
-    )
+    response = client.post('/uploadfile', input = 'snipet_with_pass.txt')
   assert response.status_code == 200
   assert response == {3: 'String password = ""Stargate1"";'}
 
