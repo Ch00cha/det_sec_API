@@ -170,6 +170,8 @@ def model_cand_pass(path):
         results = {'Snippet': input['Input'].tolist(), 'Target': new_preds}
         df = pd.DataFrame(results)
         passwords_mas = df[df['Target'] == 1]['Snippet'].tolist()
+        if passwords_mas == []:
+            return 'Пароли не найдены'
         return passwords_mas
 
 
