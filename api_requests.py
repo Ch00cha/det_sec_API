@@ -42,7 +42,10 @@ def github_scan_rep(repository_path):
 
 def request_to_det_sec_API(url):
     data = github_scan_rep(url)
-    data = {"accept": data}
-    ip = read_ip()
-    r = requests.post(f'http://{ip}:8000/predict',  data = json.dumps(data)).json()
-    return r
+    if type(data) == str:
+        return data
+    else:
+        data = {"accept": data}
+        ip = read_ip()
+        r = requests.post(f'http://{ip}:8000/predict',  data = json.dumps(data)).json()
+        return r
