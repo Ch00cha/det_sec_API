@@ -3,7 +3,7 @@ import json
 
 def read_ip():
     file = open("/tmp/myipnow.txt", "r")
-    ip = file.read()
+    ip = file.read().rstrip("\n")
     return ip
 
 def github_scan_rep(repository_path):
