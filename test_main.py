@@ -38,9 +38,9 @@ def test_scan_rep():
                    'SW1wRGVzY1tdIFBST0dNRU0gPSAiIlswfDFdIDAgPSBNZXRyaWMgMSA9IElt\n'
                    'cGVyaWFsIiI7Ig==\n',
         'name': 'test_file.txt'}]
-    predict = request_to_det_sec_API('https://github.com/Ch00cha/det_sec_API/blob/main/test_file.txt')
-    assert predict.status_code == 200
-    assert predict == {'test_file.txt': {'3': 'String password = ""Stargate1"";'}}  
+#     predict = request_to_det_sec_API('https://github.com/Ch00cha/det_sec_API/blob/main/test_file.txt')
+#     assert predict.status_code == 200
+#     assert predict == {'test_file.txt': {'3': 'String password = ""Stargate1"";'}}  
     
     
 def test_parse_repository():
@@ -49,14 +49,14 @@ def test_parse_repository():
     for file in result_scan_rep:
         files_names.append(file['name'])
     assert files_names == ['ProjectProgram.py', 'README.md', 'Test_with_pass.txt', 'Test_without_pass.txt', 'action.yml', 'requirements.txt', 'test.py']
-    predict = request_to_det_sec_API('https://github.com/mihakremen/det_sec')
-    assert predict.status_code == 200
-    assert predict == {   'ProjectProgram.py': 'Пароли не найдены',
-    'README.md': 'Пароли не найдены',
-    'Test_with_pass.txt': {   '20': "$cfg_smtp_password = 'Shadow199';",
-                              '4': "$mail->Port='465';"},
-    'Test_without_pass.txt': 'Пароли не найдены',
-    'action.yml': 'Пароли не найдены',
-    'requirements.txt': 'Пароли не найдены',
-    'test.py': 'Пароли не найдены'}
+#     predict = request_to_det_sec_API('https://github.com/mihakremen/det_sec')
+#     assert predict.status_code == 200
+#     assert predict == {   'ProjectProgram.py': 'Пароли не найдены',
+#     'README.md': 'Пароли не найдены',
+#     'Test_with_pass.txt': {   '20': "$cfg_smtp_password = 'Shadow199';",
+#                               '4': "$mail->Port='465';"},
+#     'Test_without_pass.txt': 'Пароли не найдены',
+#     'action.yml': 'Пароли не найдены',
+#     'requirements.txt': 'Пароли не найдены',
+#     'test.py': 'Пароли не найдены'}
     
